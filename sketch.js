@@ -49,6 +49,9 @@ function createEmptyGrid(numCols, numRows) {
         if (dr === 0 && dc === 0) {
           continue;
         }
+
+        // Why (row + dr + gridHeightNum) % gridHeightNum instead of just (row + dr) % gridHeightNum?
+        // To prevent newRow/newCol from becoming negative when it checks cells at the edges of the sketch
         let newRow = (row + dr + gridHeightNum) % gridHeightNum;
         let newCol = (col + dc + gridWidthNum) % gridWidthNum;
         count += grid[newRow][newCol];
