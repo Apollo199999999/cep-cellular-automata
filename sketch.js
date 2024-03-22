@@ -124,8 +124,12 @@ let gridWidthNum;
 let cellSize;
 let grid;
 let isRunning = false;
+// For audio
+let polySynth;
 
 function setup() {
+  // Assign polysynth
+  polySynth = new p5.PolySynth();
   // Framerate should be 60 otherwise it will affect ui animations as well
   // This is because animations fundamentally rely on window.requestAnimationFrame() method
   frameRate(60);
@@ -168,12 +172,51 @@ function pauseGame() {
   isRunning = false;
 }
 
-function playSound() {
-  //todo
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function playSound() {
+  // Stop the game first
+  isRunning = false;
+
+  polySynth = new p5.PolySynth();
+  userStartAudio();
+
+  // Get the middle row of the grid, which will be taken as the "Middle C" level
+  let middleRow = Math.floor(gridHeightNum / 2) - 1;
+
+  // Treat each column as a stave, with the middle row being middle C
+  for (let col = 0; col < gridWidthNum; col++) {
+    let numberOfNotes = 0;
+
+    for (let row = 0; row < gridHeightNum; row++) {
+      if (grid[row][col] > 0) {
+        // Play note based on how high/low we are compared to middle C at middle row
+        // If we designate the middle row as having a midi value of 60, 
+        // we can find out what note corresponds to which row by simply counting upwards and downwards
+        // https://inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
+        let note = 60 + (middleRow - row);
+        // Convert midi note number to frequency
+        let freq = 440 * Math.pow(2, (note - 69) / 12);
+        console.log("Note frequency: " + freq.toString());
+        numberOfNotes += 1;
+        polySynth.noteAttack(freq, grid[row][col]);
+      }
+    }
+
+    if (numberOfNotes > 0) {
+      await sleep(800);
+      polySynth.noteRelease();
+      await sleep(50);
+    }
+  }
+
 }
 
 function stopSound() {
-  //todo
+  // Stop playing the sound
+  polySynth.dispose();
 }
 
 // #endregion

@@ -11966,7 +11966,7 @@ function () {
       } 
       else {
           currentVoice = this._oldest;
-          oldestNote = freqToMidi(this.audiovoices[this._oldest].oscillator.freq().value);
+          let oldestNote = freqToMidi(this.audiovoices[this._oldest].oscillator.freq().value);
           this.noteRelease(oldestNote);
           this._oldest = (this._oldest + 1) % (this.maxVoices - 1);
         } 

@@ -74,14 +74,17 @@
                         it lives. If the cell has 0 neighbours, it will die.
                     </li>
                     <li>
-                        Appearance: The cell will be coloured based on how alive it is. A 100% alive cell will be completely black,
+                        Appearance: The cell will be coloured based on how alive it is. A 100% alive cell will be
+                        completely black,
                         while a 0% alive cell will be completely white.
                     </li>
                 </ul>
                 <p class="text-base mt-2">This game also generates music using the dead/alive cells. For every column in
-                    the 2D grid, the colour of each cell will be mapped to a note frequency, and all the cells in each
-                    column of the 2D grid are then played as one chord. To play the sound, click the corresponding
-                    buttons under the "Controls" section.</p>
+                    the 2D grid, each row will be mapped to a note frequency, and for each row, if the row contains an
+                    alive cell, that row's corresponding note is played, which will cause each column that contains alive cells
+                    to produce a chord. To play the sound, click the corresponding
+                    buttons under the "Controls" section. Do note that this will pause the game at the current
+                    generation.</p>
             </div>
 
             <div class="mt-4">
