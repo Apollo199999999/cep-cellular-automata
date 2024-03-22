@@ -6,6 +6,7 @@
     <!-- Tailwind -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- p5 code -->
     <script src="sketch.js"></script>
 </head>
 
@@ -22,7 +23,7 @@
             <div class="mt-4">
                 <p class="text-xl font-semibold">Controls</p>
                 <!-- Play button -->
-                <button class="mt-4 btn btn-primary mr-1">
+                <button class="mt-4 btn btn-primary mr-1" onclick="startGame()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -30,14 +31,14 @@
                     </svg>
                 </button>
                 <!-- Pause button -->
-                <button class="btn btn-neutral mr-1">
+                <button class="btn btn-neutral mr-1" onclick="pauseGame()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
                     </svg>
                 </button>
                 <!-- Play sound button -->
-                <button class="btn btn-neutral mr-1">
+                <button class="btn btn-neutral mr-1" onclick="playSound()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -45,7 +46,7 @@
                     </svg>
                 </button>
                 <!-- Stop sound button -->
-                <button class="btn btn-neutral">
+                <button class="btn btn-neutral" onclick="stopSound()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -60,14 +61,21 @@
                 <p class="text-base mt-2">This is a modified version of Conway's Game of Life, with the following rules:
                 </p>
                 <ul class="list-disc list-outside pl-4">
-                    <li>Birth: A dead cell with exactly three live neighbours becomes alive (reproduction).</li>
-                    <li>Survival: A live cell with two or three live neighbours stays alive (stasis).</li>
+                    <li>Birth: A dead cell with exactly three live neighbours becomes 100% alive (reproduction).</li>
+                    <li>Survival: A live cell with exactly three live neighbours stays 100% alive (stasis).</li>
                     <li>
-                        Overpopulation: If the cell has 4-8 neighbours, its chance of dying ranges from 20% to 100%.
+                        Overpopulation: If a live cell has 4 neighbours, it has an 80% chance of dying, and will be 20%
+                        alive if it lives. If a live cell has 5 or more neighbours, it will die.
                     </li>
-                    <li>Loneliness: If the cell has 0-1 neighbours, its chance of dying ranges from 0% to 100%.</li>
-                    <li>Appearance: If the cell survives either overpopulation or loneliness, the colour of the cell
-                        will represent its chance of death previously.</li>
+                    <li>
+                        Loneliness: If the cell has 2 neighbours, it has a 20% chance of dying, and will be 80% alive if
+                        it lives. If the cell has 1 neighbour, it has an 80% chance of dying, and will be 20% alive if
+                        it lives. If the cell has 0 neighbours, it will die.
+                    </li>
+                    <li>
+                        Appearance: The cell will be coloured based on how alive it is. A 100% alive cell will be completely black,
+                        while a 0% alive cell will be completely white.
+                    </li>
                 </ul>
                 <p class="text-base mt-2">This game also generates music using the dead/alive cells. For every column in
                     the 2D grid, the colour of each cell will be mapped to a note frequency, and all the cells in each
