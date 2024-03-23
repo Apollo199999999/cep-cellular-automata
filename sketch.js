@@ -108,11 +108,17 @@ function countLiveNeighbours(grid, row, col) {
   return count;
 }
 
-// Allows the user to make a cell alive
+// Allows the user to change a cell's state
 function toggleCellState() {
   let row = Math.floor(mouseY / cellSize);
   let col = Math.floor(mouseX / cellSize);
   grid[row][col] = grid[row][col] === 1 ? 0 : 1;
+}
+
+function makeCellAlive() {
+  let row = Math.floor(mouseY / cellSize);
+  let col = Math.floor(mouseX / cellSize);
+  grid[row][col] = 1;
 }
 
 // #endregion
@@ -147,7 +153,7 @@ function mouseClicked() {
 }
 
 function mouseDragged() {
-  toggleCellState();
+  makeCellAlive();
 }
 
 function draw() {
@@ -183,25 +189,40 @@ async function playSound() {
   polySynth = new p5.PolySynth();
   userStartAudio();
 
-  // Get the middle row of the grid, which will be taken as the "Middle C" level
+  // We will play chords based on a D major pentatonic scale
+  let scaleNotes = ['D', 'E', 'F#', 'A', 'B'];
+
+  // Get the middle row of the grid, which will be taken as D4
   let middleRow = Math.floor(gridHeightNum / 2) - 1;
 
-  // Treat each column as a stave, with the middle row being middle C
+  // Treat each column as a chord
   for (let col = 0; col < gridWidthNum; col++) {
     let numberOfNotes = 0;
 
     for (let row = 0; row < gridHeightNum; row++) {
       if (grid[row][col] > 0) {
-        // Play note based on how high/low we are compared to middle C at middle row
-        // If we designate the middle row as having a midi value of 60, 
-        // we can find out what note corresponds to which row by simply counting upwards and downwards
-        // https://inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
-        let note = 60 + (middleRow - row);
-        // Convert midi note number to frequency
-        let freq = 440 * Math.pow(2, (note - 69) / 12);
-        console.log("Note frequency: " + freq.toString());
+        // Find which note of the scale we are at
+        let note = "";
+        if (row <= middleRow) {
+          let notesAboveD4 = middleRow - row;
+          let currNoteIndex = notesAboveD4 % scaleNotes.length;
+          // For some reason, p5js takes one octave as A to G instead of C to B, so we need to account for that when counting the number of octaves
+          let octavesCount = 4 + Math.floor((notesAboveD4 + 2) / scaleNotes.length);
+          note = scaleNotes[currNoteIndex] + octavesCount;
+          console.log(note);
+        }
+        else if (row > middleRow) {
+          // Instead of taking D4 as the reference point, we take B3 below D4 to be the reference point as well,
+          // to align with the last note of the pentatonic scale
+          let notesBelowB3 = row - middleRow - 1;
+          let currNoteIndex = notesBelowB3 % scaleNotes.length;
+          // For some reason, p5js takes one octave as A to G instead of C to B, so we need to account for that when counting the number of octaves
+          let octavesCount = 4 - Math.floor((notesBelowB3 + 3) / scaleNotes.length);
+          note = scaleNotes.slice().reverse()[currNoteIndex] + octavesCount;
+        }
+
         numberOfNotes += 1;
-        polySynth.noteAttack(freq, grid[row][col]);
+        polySynth.noteAttack(note, grid[row][col]);
       }
     }
 
